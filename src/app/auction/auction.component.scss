@@ -1,0 +1,17 @@
+:host {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .title {
+    flex: 1 1 auto;
+    font-size: 5em;
+  }
+
+  svg {
+    flex: 1 1 auto;
+    margin: 0 auto 2vmin auto;
+  }
+}

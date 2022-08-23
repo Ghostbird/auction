@@ -1,0 +1,24 @@
+<form #f="ngForm" (ngSubmit)="updateSettings(f)">
+  <label id="labelMax" for="maximum">Maximum</label>
+  <input
+    id="maximum"
+    name="maximum"
+    min="0"
+    max="999"
+    step="1"
+    required
+    [ngModel]="10"
+  />
+  <label id="labelTime" for="time">Time</label>
+  <input name="time" id="time" min="5" step="1" required [ngModel]="5" />
+  <button>Apply</button>
+</form>
+<div>
+  <button id="startStop" (click)="controlAction('startStop')">
+    Start/Stop
+  </button>
+  <button id="reset" (click)="controlAction('reset')">Reset</button>
+</div>
+<a class="nav-top-right" href="/" target="_blank">🔨</a>
+<!-- View side subscription only -->
+<ng-container *nfIf="keys$ | async"></ng-container>
