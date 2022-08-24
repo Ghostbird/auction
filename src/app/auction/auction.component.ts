@@ -27,6 +27,7 @@ const defaultSettings: Settings = {
   end: 20.0,
   time: 10.0,
   title: 'Dutch auction',
+  format: '3.0-0'
 };
 
 const forAction = (action: ControlAction) =>
@@ -38,21 +39,16 @@ const toViewModel = (settings: Settings) => {
   return (count: number) => {
     const factor = count / maximumCount;
     return {
-      title: settings.title,
+      ...settings,
       factor: range > 0 ? factor : 1 - factor,
       value: range * factor + settings.start,
-      start: settings.start,
-      end: settings.end,
     } as ViewModel;
   };
 };
 
-interface ViewModel {
-  start: number;
-  end: number;
+interface ViewModel extends Settings {
   factor: number;
   value: number;
-  title: string;
 }
 
 @Component({
@@ -74,6 +70,7 @@ export class AuctionComponent {
         (params) =>
           ({
             title: params['title'] ?? defaultSettings.title,
+            format: params['format'] ?? defaultSettings.format,
             start:
               parseFloat(params['start'] as string) || defaultSettings.start,
             end: parseFloat(params['end'] as string) || defaultSettings.end,

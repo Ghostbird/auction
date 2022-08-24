@@ -16,6 +16,7 @@
       "labelStart inputStart" 8vmin
       "labelEnd inputEnd" 8vmin
       "labelTime inputTime" 8vmin
+      "labelFormat inputFormat" 8vmin
       "button button" 8vmin;
 
     > * {
@@ -56,6 +57,14 @@
 
     #time {
       grid-area: inputTime;
+    }
+
+    #labelFormat {
+      grid-area: labelFormat;
+    }
+
+    #format {
+      grid-area: inputFormat;
     }
 
     button {

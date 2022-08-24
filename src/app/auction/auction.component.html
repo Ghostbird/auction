@@ -3,8 +3,8 @@
     {{ model.title }}
   </h1>
   <h2>
-    {{ model.start | currency: "EUR":"symbol":"0.0-0" }} –
-    {{ model.end | currency: "EUR":"symbol":"0.0-0" }}
+    {{ model.start | currency: "EUR":"symbol":model.format }} –
+    {{ model.end | currency: "EUR":"symbol":model.format }}
   </h2>
   <svg viewBox="0 0 100 100">
     <circle
@@ -29,7 +29,7 @@
       attr.stroke-dasharray="{{ 283 * model.factor }}, 283"
     />
     <text x="50% " y="50%" dominant-baseline="middle" text-anchor="middle">
-      {{ model.factor === 1.0 ? ' ' : model.value | currency: "EUR":"symbol":"3.0-0" }}
+      {{ model.factor === 1.0 ? ' ' : model.value | currency: "EUR":"symbol":model.format }}
     </text>
   </svg>
   <a class="nav-top-right" href="/control" target="_blank">🔧</a>

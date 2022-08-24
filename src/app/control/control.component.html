@@ -6,8 +6,6 @@
     type="number"
     id="start"
     name="start"
-    min="0"
-    max="999"
     step="1"
     required
     [ngModel]="0"
@@ -17,8 +15,6 @@
     type="number"
     id="end"
     name="end"
-    min="0"
-    max="999"
     step="1"
     required
     [ngModel]="20"
@@ -33,6 +29,8 @@
     required
     [ngModel]="10"
   />
+  <label id="labelFormat" for="title">Format</label>
+  <input name="format" id="format" required ngModel="3.0-0" />
   <button>Apply</button>
 </form>
 <div>

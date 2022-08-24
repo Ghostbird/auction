@@ -10,6 +10,10 @@ This project creates an auction clock in the style of a [Dutch Auction](https://
 - At either control or auction page, you can start/stop the clock using the space bar and reset the clock by pressing escape.
 - At the auction page, on a mobile you can start/stop the clock using a short tap, and reset it using a long tap (>300ms)
 
+## Known issues
+
+If you run the clock to the end, it automatically stops. Then you'll have to press twice to restart the clock. The first press will still try to stop the clock. I know of an ugly solution, but I want an elegant one. I've left it like this for now. An auctioneer aims to avoid such _no sale_ situations anyway. 
+
 ## Development
 
 1. Clone this repo

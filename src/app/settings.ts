@@ -3,4 +3,5 @@ export interface Settings {
   end: number;
   time: number;
   title: string;
+  format: string;
 }
