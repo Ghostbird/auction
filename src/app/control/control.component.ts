@@ -13,6 +13,7 @@ export class ControlComponent {
   private controlChannel = new BroadcastChannel('auction-control');
 
   public keys$ = fromEvent<KeyboardEvent>(window, 'keydown').pipe(
+    filter(event => (event.target as Element)?.tagName !== 'INPUT'),
     tap((event) => {
       if (event.key === ' ') {
         event?.preventDefault();
