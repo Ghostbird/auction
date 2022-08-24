@@ -39,7 +39,7 @@ const toViewModel = (settings: Settings) => {
     const factor = count / maximumCount;
     return {
       title: settings.title,
-      factor,
+      factor: range > 0 ? factor : 1 - factor,
       value: range * factor + settings.start,
       start: settings.start,
       end: settings.end,
