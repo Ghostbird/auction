@@ -1,16 +1,38 @@
 <form #f="ngForm" (ngSubmit)="updateSettings(f)">
-  <label id="labelMax" for="maximum">Maximum</label>
+  <label id="labelTitle" for="title">Title</label>
+  <input name="title" id="title" required ngModel="Dutch auction" />
+  <label id="labelStart" for="start">Start</label>
   <input
-    id="maximum"
-    name="maximum"
+    type="number"
+    id="start"
+    name="start"
     min="0"
     max="999"
     step="1"
     required
-    [ngModel]="10"
+    [ngModel]="0"
+  />
+  <label id="labelEnd" for="end">End</label>
+  <input
+    type="number"
+    id="end"
+    name="end"
+    min="0"
+    max="999"
+    step="1"
+    required
+    [ngModel]="20"
   />
   <label id="labelTime" for="time">Time</label>
-  <input name="time" id="time" min="5" step="1" required [ngModel]="5" />
+  <input
+    type="number"
+    name="time"
+    id="time"
+    min="5"
+    step="1"
+    required
+    [ngModel]="10"
+  />
   <button>Apply</button>
 </form>
 <div>

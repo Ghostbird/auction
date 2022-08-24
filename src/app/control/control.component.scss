@@ -10,30 +10,52 @@
   form {
     width: 100vmin;
     display: grid;
-    grid-template-areas:
-      "label1 input1"
-      "label2 input2"
-      "button button";
+    align-items: center;
+    grid-template:
+      "labelTitle inputTitle" 8vmin
+      "labelStart inputStart" 8vmin
+      "labelEnd inputEnd" 8vmin
+      "labelTime inputTime" 8vmin
+      "button button" 8vmin;
 
     > * {
-      height: 5vmin;
+      height: 6vmin;
       font-size: 3vmin;
     }
 
-    #labelMax {
-      grid-area: label1;
+    input {
+      padding-left: 1vmin;
     }
 
-    #maximum {
-      grid-area: input1;
+    #labelTitle {
+      grid-area: labelTitle;
+    }
+
+    #title {
+      grid-area: inputTitle;
+    }
+
+    #labelStart {
+      grid-area: labelStart;
+    }
+    #start {
+      grid-area: inputStart;
+    }
+
+    #labelTitle {
+      grid-area: labelTitle;
+    }
+
+    #title {
+      grid-area: inputTitle;
     }
 
     #labelTime {
-      grid-area: label2;
+      grid-area: labelTime;
     }
 
     #time {
-      grid-area: input2;
+      grid-area: inputTime;
     }
 
     button {

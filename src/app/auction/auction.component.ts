@@ -13,21 +13,44 @@ import {
   switchMap,
   takeUntil,
   takeWhile,
+  skip,
 } from 'rxjs';
 import { Settings } from '../settings';
 import { ControlAction } from '../controlAction';
 
 const TIME_CHUNK = 100;
 
-const defaultSettings: Settings = { maximum: 20.0, time: 10.0 };
+const defaultSettings: Settings = {
+  start: 0.0,
+  end: 20.0,
+  time: 10.0,
+  title: 'Dutch auction',
+};
 
 const forAction = (action: ControlAction) =>
   filter<ControlAction>((incoming) => incoming === action);
 
+const toViewModel = (settings: Settings) => {
+  const range = settings.end - settings.start;
+  const maximumCount = (settings.time * 1000) / TIME_CHUNK;
+  return (count: number) => {
+    const factor = count / maximumCount;
+    return {
+      title: settings.title,
+      factor,
+      value: range * factor + settings.start,
+      start: settings.start,
+      end: settings.end,
+    } as ViewModel;
+  };
+};
+
 interface ViewModel {
+  start: number;
+  end: number;
   factor: number;
   value: number;
-  maximum: number;
+  title: string;
 }
 
 @Component({
@@ -44,12 +67,15 @@ export class AuctionComponent {
 
     const initialReset$ = of(null);
 
-    const routeSettings$ = this.route.paramMap.pipe(
+    const routeSettings$ = this.route.queryParams.pipe(
       map(
-        (paramMap) =>
+        (params) =>
           ({
-            maximum: parseFloat(paramMap.get('maximum') as string) || defaultSettings.maximum,
-            time: parseFloat(paramMap.get('time') as string) || defaultSettings.time,
+            title: params['title'] ?? defaultSettings.title,
+            start:
+              parseFloat(params['start'] as string) || defaultSettings.start,
+            end: parseFloat(params['end'] as string) || defaultSettings.end,
+            time: parseFloat(params['time'] as string) || defaultSettings.time,
           } as Settings)
       )
     );
@@ -62,7 +88,7 @@ export class AuctionComponent {
       of(defaultSettings),
       broadCastSettings$,
       routeSettings$
-    ).pipe(shareReplay(1));
+    );
 
     const controlActions$ = fromEvent<
       MessageEvent<ControlAction>,
@@ -76,7 +102,7 @@ export class AuctionComponent {
       merge(controlActions$.pipe(forAction('startStop')), spacePressed$).pipe(
         // This is essential to make the partition of the observable work.
         // If it's not shareReplayed, the partition re-subscribes, and the count is restarted.
-        shareReplay(1)
+        shareReplay({ bufferSize: 1, refCount: true })
       ),
       (_, i) => i % 2 === 0
     );
@@ -84,9 +110,9 @@ export class AuctionComponent {
       filter((event) => event.key === 'Escape')
     );
     const reset$ = merge(
+      initialReset$,
       controlActions$.pipe(forAction('reset')),
       escapePressed$,
-      initialReset$
     ).pipe(shareReplay(1));
 
     this.model$ = settings$.pipe(
@@ -97,28 +123,12 @@ export class AuctionComponent {
               const maximumCount = (settings.time * 1000) / TIME_CHUNK;
               return interval(TIME_CHUNK).pipe(
                 takeWhile((count) => count <= maximumCount),
-                map((count) => {
-                  const factor = count / maximumCount;
-                  return {
-                    factor,
-                    value: settings.maximum * factor,
-                    maximum: settings.maximum,
-                  } as ViewModel;
-                }),
-                takeUntil(stop$)
+                map(toViewModel(settings)),
+                takeUntil(merge(stop$, reset$.pipe(skip(1))))
               );
             })
           ),
-          reset$.pipe(
-            map(
-              () =>
-                ({
-                  factor: 0,
-                  value: settings.maximum * 0,
-                  maximum: settings.maximum,
-                } as ViewModel)
-            )
-          )
+          reset$.pipe(map(() => toViewModel(settings)(0)))
         )
       )
     );

@@ -9,15 +9,7 @@ const routes: Routes = [
     component: ControlComponent,
   },
   {
-    path: ':maximum/:time',
-    component: AuctionComponent,
-  },
-  {
-    path: ':maximum',
-    component: AuctionComponent,
-  },
-  {
-    path: '',
+    path: '**',
     component: AuctionComponent,
   },
 ];

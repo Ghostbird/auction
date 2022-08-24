@@ -1,4 +1,6 @@
 export interface Settings {
-  maximum: number;
+  start: number;
+  end: number;
   time: number;
+  title: string;
 }
