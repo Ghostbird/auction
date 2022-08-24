@@ -14,6 +14,8 @@ import {
   takeUntil,
   takeWhile,
   skip,
+  race,
+  timer,
 } from 'rxjs';
 import { Settings } from '../settings';
 import { ControlAction } from '../controlAction';
@@ -95,11 +97,30 @@ export class AuctionComponent {
       ControlAction
     >(controlChannel, 'message', (event) => event.data);
 
+    const touchStart$ = fromEvent<TouchEvent>(window, 'touchstart');
+    const touchEnd$ = fromEvent<TouchEvent>(window, 'touchend');
+    const [tap$, longTap$] = partition(
+      touchStart$.pipe(
+        switchMap(() =>
+          race(
+            // Touchend within 500ms, short tap
+            touchEnd$.pipe(map(() => true)),
+            // No touchend within timer period, long tap
+            timer(300).pipe(map(() => false)),
+          )
+        )
+      ),
+      (x) => x
+    );
     const spacePressed$ = fromEvent<KeyboardEvent>(window, 'keydown').pipe(
       filter((event) => event.key === ' ')
     );
     const [start$, stop$] = partition(
-      merge(controlActions$.pipe(forAction('startStop')), spacePressed$).pipe(
+      merge(
+        controlActions$.pipe(forAction('startStop')),
+        spacePressed$,
+        tap$
+      ).pipe(
         // This is essential to make the partition of the observable work.
         // If it's not shareReplayed, the partition re-subscribes, and the count is restarted.
         shareReplay({ bufferSize: 1, refCount: true })
@@ -113,6 +134,7 @@ export class AuctionComponent {
       initialReset$,
       controlActions$.pipe(forAction('reset')),
       escapePressed$,
+      longTap$,
     ).pipe(shareReplay(1));
 
     this.model$ = settings$.pipe(
